@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Z-Bot — Gen-Z Chat</title>
+  <meta name="description" content="Gen-Z style chatbot (Z-Bot) — vibes, memes, and quick convos." />
+
+  <style>
+    :root{
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #8b5cf6;
+      --muted: #9aa4b2;
+      --glass: rgba(255,255,255,0.03);
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #071028 0%, #0f1724 100%);
+      color:#e6eef8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .card{
+      width:980px;
+      max-width:100%;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      padding:28px;
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:20px;
+      align-items:start;
+    }
+
+    .hero h1{
+      margin:0 0 8px 0;
+      font-size:28px;
+      letter-spacing: -0.02em;
+    }
+    .hero p{ margin:0 0 16px 0; color:var(--muted); line-height:1.4 }
+
+    .features{ display:grid; gap:10px; margin-top:14px }
+    .feature{ background:var(--glass); padding:10px 12px; border-radius:8px; font-size:14px; color:#dce9ff }
+
+    .right {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .chat-btn{
+      width:100%;
+      background:linear-gradient(90deg,var(--accent), #5eead4);
+      color:#041026;
+      border:0;
+      padding:12px 14px;
+      border-radius:10px;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow: 0 8px 20px rgba(139,92,246,0.18);
+    }
+
+    .info {
+      background:rgba(255,255,255,0.02);
+      padding:12px;
+      border-radius:8px;
+      font-size:13px;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    footer { grid-column: 1 / -1; margin-top:14px; color:var(--muted); font-size:13px; text-align:right }
+    @media (max-width:880px){
+      .card{ grid-template-columns: 1fr; padding:18px; }
+      footer{text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <section class="hero">
+      <h1 id="title">Z-Bot — Gen-Z Chat</h1>
+      <p>Gen-Z style chatbot that vibes, roasts, hypes, and replies with memes & slang. Built with Watson Assistant.</p>
+
+      <div class="features" aria-hidden="false">
+        <div class="feature">• Understands Gen-Z slang (rizz, cap, fr, bussin)</div>
+        <div class="feature">• Hype, roast, advice, study help & casual chat</div>
+        <div class="feature">• Fast replies, emoji-friendly, playful tone</div>
+      </div>
+    </section>
+
+    <aside class="right" aria-label="Chat controls">
+      <div style="width:100%">
+        <button id="openChat" class="chat-btn" type="button">Open Z-Bot Chat</button>
+      </div>
+      <div class="info">
+        If the widget doesn't appear automatically, click "Open Z-Bot Chat".<br>
+        Region: eu-de — Integration ID included.
+      </div>
+    </aside>
+
+    <footer>Made for Gen-Z vibes • Integration ID embedded</footer>
+  </main>
+
+  <!-- Watson Assistant chat snippet (your code) -->
+  <script>
+    window.watsonAssistantChatOptions = {
+      integrationID: "7901e241-4b72-48c6-8187-2e6b5372d229", // The ID of this integration.
+      region: "eu-de", // The region your integration is hosted in.
+      serviceInstanceID: "68c21893-a895-4ae8-8def-2ce8e62371a6", // The ID of your service instance.
+      onLoad: async (instance) => { await instance.render(); }
+    };
+
+    // Lazy-loader (also used if user clicks the button)
+    function loadWatsonScript() {
+      if (document.getElementById('watson-sdk')) return;
+      const t = document.createElement('script');
+      t.id = 'watson-sdk';
+      t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      t.defer = true;
+      document.head.appendChild(t);
+    }
+
+    // Try to auto-load after small delay (keeps page interactive)
+    setTimeout(loadWatsonScript, 600);
+
+    // If user explicitly clicks, ensure the script is loaded and then open (if available).
+    document.getElementById('openChat').addEventListener('click', async () => {
+      loadWatsonScript();
+
+      // If the Watson instance is available, call open() — otherwise render will run from onLoad.
+      // we attempt to access window.watsonAssistantChat and call open if present after the script loads.
+      function tryOpen(retries = 10) {
+        const chat = window.watsonAssistantChat;
+        if (chat && typeof chat.open === 'function') {
+          chat.open();
+          return;
+        }
+        if (retries > 0) setTimeout(() => tryOpen(retries - 1), 300);
+      }
+      tryOpen();
+    });
+  </script>
+</body>
+</html>
